@@ -1,0 +1,159 @@
+/* =========================
+   PAGE BACKGROUND
+   ========================= */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(56, 189, 248, 0.08),
+      rgba(2, 6, 23, 0.95)
+    ),
+    linear-gradient(180deg, #020617, #020617);
+}
+
+/* =========================
+   AUTH CARD (GLASS)
+   ========================= */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.9),
+    rgba(2, 6, 23, 0.95)
+  );
+
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* =========================
+   HEADER
+   ========================= */
+.auth-header h2 {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+.auth-header p {
+  margin: 0 0 1.8rem 0;
+  opacity: 0.75;
+  font-size: 0.95rem;
+}
+
+/* =========================
+   FORM
+   ========================= */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* First + last name row */
+.row {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.row input {
+  flex: 1;
+}
+
+/* =========================
+   INPUTS
+   ========================= */
+.auth-form input {
+  height: 46px;
+  padding: 0 14px;
+
+  font-size: 0.95rem;
+  color: #e5e7eb;
+
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.auth-form input::placeholder {
+  opacity: 0.6;
+}
+
+.auth-form input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+/* Password visual refinement */
+.auth-form input[type="password"] {
+  letter-spacing: 0.18em;
+  padding-top: 1px;
+}
+
+/* =========================
+   BUTTON
+   ========================= */
+.auth-submit {
+  margin-top: 0.6rem;
+  height: 48px;
+
+  font-size: 1rem;
+  font-weight: 500;
+
+  border-radius: 14px;
+  cursor: pointer;
+
+  background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+  color: #020617;
+  border: none;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 40px rgba(56, 189, 248, 0.35);
+}
+
+/* =========================
+   FOOTER LINKS
+   ========================= */
+.auth-footer {
+  margin-top: 1.4rem;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.auth-footer span {
+  color: #38bdf8;
+  cursor: pointer;
+}
+
+.auth-footer span:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 2rem 1.6rem;
+  }
+}

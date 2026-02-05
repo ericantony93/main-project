@@ -1,0 +1,85 @@
+.checkout-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(circle at top, rgba(56,189,248,0.08), rgba(2,6,23,0.95));
+}
+
+.checkout-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 2.6rem;
+
+  background: linear-gradient(180deg, #0f172a, #020617);
+  border-radius: 22px;
+  border: 1px solid rgba(148,163,184,0.15);
+
+  box-shadow: 0 40px 90px rgba(0,0,0,0.6);
+}
+
+.checkout-card h2 {
+  margin-bottom: 0.4rem;
+}
+
+.subtitle {
+  opacity: 0.7;
+  margin-bottom: 1.8rem;
+}
+
+/* SUMMARY */
+.order-summary {
+  margin-bottom: 1.8rem;
+  border-radius: 14px;
+  background: rgba(15,23,42,0.8);
+  padding: 1rem;
+}
+
+.order-summary .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  opacity: 0.9;
+}
+
+.order-summary .total {
+  font-weight: 600;
+  border-top: 1px solid rgba(148,163,184,0.15);
+  margin-top: 0.6rem;
+  padding-top: 0.8rem;
+}
+
+/* FORM */
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.checkout-form input {
+  height: 46px;
+  padding: 0 14px;
+
+  background: rgba(15,23,42,0.9);
+  border: 1px solid rgba(148,163,184,0.2);
+  border-radius: 12px;
+
+  color: #e5e7eb;
+}
+
+.checkout-form input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56,189,248,0.2);
+}
+
+.checkout-btn {
+  margin-top: 1rem;
+  height: 48px;
+  border-radius: 14px;
+}
+.addon-item {
+  margin: 0.6rem 0;
+}

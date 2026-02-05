@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+.dashboard {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.center {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error {
+  color: #ef4444;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: #020617;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.card.main {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.aqi {
+  margin-top: 1rem;
+}
+
+.aqi-value {
+  font-size: 4rem;
+  font-weight: bold;
+  display: block;
+}
+
+.aqi-status {
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+
+/* AQI colors */
+.aqi.moderate {
+  color: #facc15;
+}
+.aqi.good {
+  color: #22c55e;
+}
+.aqi.unhealthy {
+  color: #ef4444;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.grid .card {
+  text-align: center;
+}
+
+.timestamp {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}

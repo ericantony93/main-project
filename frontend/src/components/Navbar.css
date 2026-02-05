@@ -1,0 +1,39 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #020617;
+  border-bottom: 1px solid #1e293b;
+}
+
+.nav-brand {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #e5e7eb;
+}
+
+/* 👇 THIS IS THE KEY FIX */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: #38bdf8;
+}
+
+.buy-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  background: #38bdf8;
+  color: #020617 !important;
+  font-weight: 600;
+}

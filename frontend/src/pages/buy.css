@@ -1,0 +1,144 @@
+/* =========================
+   BUY PAGE WRAPPER
+   ========================= */
+.buy-page {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 4rem;
+}
+
+/* =========================
+   BUY CONTAINER
+   ========================= */
+.buy-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* =========================
+   BUY CARD
+   ========================= */
+.buy-card {
+  width: 100%;
+  max-width: 540px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2,6,23,0.95),
+      rgba(2,6,23,0.85)
+    );
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(56, 189, 248, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+/* =========================
+   TITLE
+   ========================= */
+.buy-card h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+/* =========================
+   SUBTITLE
+   ========================= */
+.subtitle {
+  opacity: 0.85;
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+}
+
+/* =========================
+   FEATURES LIST
+   ========================= */
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+}
+
+.features-list li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.features-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #38bdf8;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+/* =========================
+   DIVIDER
+   ========================= */
+.features-list::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: 1.8rem;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(56,189,248,0.4),
+    transparent
+  );
+}
+
+/* =========================
+   PRICE
+   ========================= */
+.price {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 1.8rem 0 2.2rem;
+  color: #e5f3ff;
+  letter-spacing: 0.5px;
+}
+
+/* =========================
+   BUY BUTTON
+   ========================= */
+.buy-btn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+.buy-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 35px rgba(56, 189, 248, 0.35);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 640px) {
+  .buy-card {
+    padding: 2.2rem;
+  }
+
+  .price {
+    font-size: 1.9rem;
+  }
+}
