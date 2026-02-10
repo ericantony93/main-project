@@ -5,6 +5,7 @@ import Buy from "./pages/buy";
 import Auth from "./pages/Auth";
 import Checkout from "./pages/checkout";
 import LiveDemo from "./pages/Livedemo";
+import Payment from "./pages/Payment";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/demo" element={<LiveDemo />} />
+        <Route path="/payment/:orderId" element={<Payment />} />
       </Routes>
     </>
   );

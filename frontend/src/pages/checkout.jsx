@@ -9,6 +9,7 @@ export default function Checkout() {
      ========================= */
   const [addons, setAddons] = useState([]);
   const [selectedAddons, setSelectedAddons] = useState([]);
+  const [error, setError] = useState("");
 
   const [customer, setCustomer] = useState({
     full_name: "",
@@ -24,9 +25,7 @@ export default function Checkout() {
      ========================= */
   useEffect(() => {
     const token = localStorage.getItem("access");
-    if (!token) {
-      window.location.href = "/auth";
-    }
+    if (!token) window.location.href = "/auth";
   }, []);
 
   /* =========================
@@ -37,25 +36,11 @@ export default function Checkout() {
     if (!token) return;
 
     fetch("http://localhost:8000/api/store/addons/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized");
-        return res.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setAddons(data);
-        } else {
-          setAddons([]);
-        }
-      })
-      .catch((err) => {
-        console.error("Addon fetch error:", err);
-        setAddons([]);
-      });
+      .then((res) => res.json())
+      .then((data) => setAddons(Array.isArray(data) ? data : []))
+      .catch(() => setAddons([]));
   }, []);
 
   /* =========================
@@ -74,7 +59,7 @@ export default function Checkout() {
   };
 
   /* =========================
-     PRICE CALCULATION
+     PRICE
      ========================= */
   const addonsTotal = addons
     .filter((a) => selectedAddons.includes(a.id))
@@ -83,9 +68,23 @@ export default function Checkout() {
   const total = BASE_PRICE + addonsTotal;
 
   /* =========================
+     VALIDATION (ONLY SHIPPING)
+     ========================= */
+  const shippingComplete = Object.values(customer).every(
+    (value) => value.trim() !== ""
+  );
+
+  /* =========================
      SUBMIT ORDER
      ========================= */
   const submitOrder = async () => {
+    setError("");
+
+    if (!shippingComplete) {
+      setError("Please fill in all shipping details to continue.");
+      return;
+    }
+
     const token = localStorage.getItem("access");
     if (!token) {
       window.location.href = "/auth";
@@ -94,10 +93,10 @@ export default function Checkout() {
 
     const payload = {
       ...customer,
-      addons: selectedAddons,
+      addons: selectedAddons, // optional
     };
 
-    const res = await fetch("http://localhost:8000/api/store/orders/", {
+    const res = await fetch("http://localhost:8000/api/store/order/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -106,12 +105,18 @@ export default function Checkout() {
       body: JSON.stringify(payload),
     });
 
-    const data = await res.json();
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      setError("Server error. Please try again.");
+      return;
+    }
 
     if (res.ok) {
       window.location.href = `/payment/${data.order_id}`;
     } else {
-      alert("Order failed. Please check your details.");
+      setError("Order failed. Please check your details.");
       console.error(data);
     }
   };
@@ -137,7 +142,7 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* ADD-ONS */}
+        {/* ADD-ONS (UNCHANGED & OPTIONAL) */}
         <h4>Optional Sensor Add-ons</h4>
         {addons.map((addon) => (
           <div className="addon-item" key={addon.id}>
@@ -152,47 +157,17 @@ export default function Checkout() {
           </div>
         ))}
 
-        {/* CUSTOMER DETAILS */}
+        {/* SHIPPING DETAILS (REQUIRED) */}
         <h4>Shipping Details</h4>
         <form className="checkout-form">
-          <input
-            name="full_name"
-            placeholder="Full name"
-            value={customer.full_name}
-            onChange={handleCustomerChange}
-          />
-          <input
-            name="phone"
-            placeholder="Phone number"
-            value={customer.phone}
-            onChange={handleCustomerChange}
-          />
-          <textarea
-            name="address"
-            placeholder="Full address"
-            value={customer.address}
-            onChange={handleCustomerChange}
-          />
+          <input name="full_name" placeholder="Full name *" value={customer.full_name} onChange={handleCustomerChange} />
+          <input name="phone" placeholder="Phone number *" value={customer.phone} onChange={handleCustomerChange} />
+          <textarea name="address" placeholder="Full address *" value={customer.address} onChange={handleCustomerChange} />
           <div className="row">
-            <input
-              name="city"
-              placeholder="City"
-              value={customer.city}
-              onChange={handleCustomerChange}
-            />
-            <input
-              name="state"
-              placeholder="State"
-              value={customer.state}
-              onChange={handleCustomerChange}
-            />
+            <input name="city" placeholder="City *" value={customer.city} onChange={handleCustomerChange} />
+            <input name="state" placeholder="State *" value={customer.state} onChange={handleCustomerChange} />
           </div>
-          <input
-            name="pincode"
-            placeholder="Pincode"
-            value={customer.pincode}
-            onChange={handleCustomerChange}
-          />
+          <input name="pincode" placeholder="Pincode *" value={customer.pincode} onChange={handleCustomerChange} />
         </form>
 
         {/* TOTAL */}
@@ -203,7 +178,8 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* ACTION */}
+        {error && <p className="error">{error}</p>}
+
         <button className="primary checkout-btn" onClick={submitOrder}>
           Proceed to Payment
         </button>

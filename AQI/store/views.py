@@ -5,11 +5,11 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import BaseProduct, SensorAddon, Order, Device, SensorReading
 from .serializers import PriceRequestSerializer,OrderCreateSerializer, SensorAddonSerializer
-import razorpay
 from django.conf import settings
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view, permission_classes
-
+import stripe
+from decimal import Decimal
 @api_view(["GET"])
 @permission_classes([AllowAny])  # 👈 IMPORTANT (no auth needed to view addons)
 def sensor_addons(request):
@@ -42,59 +42,95 @@ class PriceView(APIView):
             "total_price": total
         })
 
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+class CreatePaymentIntent(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        order_id = request.data.get("order_id")
+
+        if not order_id:
+            return Response(
+                {"error": "order_id is required"},
+                status=400
+            )
+
+        try:
+            order = Order.objects.get(id=order_id, user=request.user)
+        except Order.DoesNotExist:
+            return Response(
+                {"error": "Order not found"},
+                status=404
+            )
+
+        amount = int(order.total_price) * 100  # INR → paise
+
+        intent = stripe.PaymentIntent.create(
+            amount=amount,
+            currency="inr",
+            metadata={
+                "order_id": order.id,
+                "user_id": request.user.id
+            }
+        )
+
+        return Response({
+            "clientSecret": intent.client_secret,
+            "amount": order.total_price
+        })
 class CreateOrderView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        user = request.user
+        data = request.data
+
+        addons_ids = data.get("addons", [])
+
         base = BaseProduct.objects.first()
         if not base:
             return Response({"error": "Base product not configured"}, status=500)
 
-        serializer = OrderCreateSerializer(
-            data=request.data,
-            context={
-                'request': request,
-                'base_price': base.base_price
-            }
+        total = Decimal(base.base_price)
+
+        addons = SensorAddon.objects.filter(id__in=addons_ids)
+        for addon in addons:
+            total += addon.price
+
+        order = Order.objects.create(
+            user=user,
+            full_name=data.get("full_name"),
+            phone=data.get("phone"),
+            address=data.get("address"),
+            city=data.get("city"),
+            state=data.get("state"),
+            pincode=data.get("pincode"),
+            total_price=total,
         )
-        serializer.is_valid(raise_exception=True)
-        order = serializer.save()
 
-        return Response({
-            "order_id": order.id,
-            "total_price": order.total_price,
-            "is_paid": order.is_paid
-        })
+        order.addons.set(addons)
 
-class CreatePaymentView(APIView):
+        return Response(
+            {
+                "order_id": order.id,
+                "total_price": str(total),
+            },
+            status=201
+        )
+
+class OrderDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, order_id):
-        try:
-            order = Order.objects.get(id=order_id, user=request.user, is_paid=False)
-        except Order.DoesNotExist:
-            return Response({"error": "Invalid order"}, status=404)
-
-        client = razorpay.Client(
-            auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
-        )
-
-        rp_order = client.order.create({
-            "amount": int(order.total_price * 100),  # paise
-            "currency": "INR",
-            "payment_capture": 1
-        })
-
-        order.payment_reference = rp_order["id"]
-        order.save()
+    def get(self, request, order_id):
+        order = Order.objects.get(id=order_id, user=request.user)
 
         return Response({
-            "razorpay_order_id": rp_order["id"],
-            "amount": order.total_price,
-            "currency": "INR",
-            "key": settings.RAZORPAY_KEY_ID
+            "id": order.id,
+            "product": "Smart AQI Monitoring System",
+            "total": order.total_price,   # ✅ FINAL TOTAL
         })
-
+    
 class SensorDataIngestView(APIView):
     permission_classes = [AllowAny]  # device-level auth later
 

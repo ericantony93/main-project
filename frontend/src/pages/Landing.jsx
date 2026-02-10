@@ -38,7 +38,7 @@ export default function Landing() {
       </section>
 
       {/* =========================
-         WHY AQI MATTERS (CARDS)
+         WHY AQI MATTERS
          ========================= */}
       <section className="info-section">
         <div className="container">
@@ -80,7 +80,7 @@ export default function Landing() {
       </section>
 
       {/* =========================
-         WHY MONITORING HELPS (CARDS)
+         WHY MONITORING HELPS
          ========================= */}
       <section className="info-section subtle">
         <div className="container">

@@ -1,0 +1,102 @@
+.payment-wrapper {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+}
+
+.payment-card {
+  width: 100%;
+  max-width: 520px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.04),
+    rgba(255,255,255,0.01)
+  );
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 2.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.payment-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+/* SUMMARY */
+.summary-box {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.summary-box .row {
+  display: flex;
+  justify-content: space-between;
+  color: #cbd5f5;
+  font-size: 0.95rem;
+}
+
+.summary-box .total {
+  margin-top: 0.6rem;
+  font-weight: 600;
+}
+
+/* FORM */
+.payment-card label {
+  display: block;
+  margin: 1.2rem 0 0.4rem;
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+.payment-card input {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(2,6,23,0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #fff;
+}
+
+.card-element {
+  padding: 0.8rem;
+  background: rgba(2,6,23,0.7);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* BUTTON */
+.pay-btn {
+  width: 100%;
+  margin-top: 1.8rem;
+  padding: 0.9rem;
+  font-size: 1rem;
+}
+
+.error {
+  color: #f87171;
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+}
+
+.secure-note {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
