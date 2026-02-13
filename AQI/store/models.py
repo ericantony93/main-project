@@ -1,5 +1,5 @@
 from django.db import models
-
+import secrets
 class BaseProduct(models.Model):
     name = models.CharField(max_length=100)
     base_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -42,14 +42,14 @@ class Order(models.Model):
         return f"Order #{self.id} - {self.full_name}"
 
 
-
 class Device(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    device_id = models.CharField(max_length=100, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100)
+    api_key = models.CharField(max_length=64, unique=True, blank=True)
 
-    def __str__(self):
-        return self.device_id
+    def save(self, *args, **kwargs):
+        if not self.api_key:
+            self.api_key = secrets.token_hex(32)
+        super().save(*args, **kwargs)
 
 class SensorReading(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
@@ -61,3 +61,11 @@ class SensorReading(models.Model):
 
     def __str__(self):
         return f"{self.device.device_id} @ {self.created_at}"
+
+class SensorData(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    pm25 = models.FloatField()
+    gas_level = models.FloatField()
+    temperature = models.FloatField()
+    humidity = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)

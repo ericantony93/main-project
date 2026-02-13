@@ -3,13 +3,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import BaseProduct, SensorAddon, Order, Device, SensorReading
+from .models import BaseProduct, SensorAddon, Order, Device, SensorReading,SensorData
 from .serializers import PriceRequestSerializer,OrderCreateSerializer, SensorAddonSerializer
 from django.conf import settings
 from rest_framework.generics import ListAPIView
 from rest_framework.decorators import api_view, permission_classes
 import stripe
 from decimal import Decimal
+from rest_framework import status
 @api_view(["GET"])
 @permission_classes([AllowAny])  # 👈 IMPORTANT (no auth needed to view addons)
 def sensor_addons(request):
@@ -132,58 +133,52 @@ class OrderDetailView(APIView):
         })
     
 class SensorDataIngestView(APIView):
-    permission_classes = [AllowAny]  # device-level auth later
+    authentication_classes = []
+    permission_classes = []
 
     def post(self, request):
-        device_id = request.data.get("device_id")
+
+        api_key = request.headers.get("X-API-KEY")
+
+        if not api_key:
+            return Response({"error": "API key missing"}, status=401)
 
         try:
-            device = Device.objects.get(device_id=device_id)
+            device = Device.objects.get(api_key=api_key)
         except Device.DoesNotExist:
-            return Response({"error": "Invalid device"}, status=404)
+            return Response({"error": "Invalid API key"}, status=403)
 
-        SensorReading.objects.create(
+        data = request.data
+
+        SensorData.objects.create(
             device=device,
-            pm25=request.data.get("pm25"),
-            gas=request.data.get("gas"),
-            temperature=request.data.get("temperature"),
-            humidity=request.data.get("humidity"),
+            pm25=data.get("pm25"),
+            gas_level=data.get("gas"),
+            temperature=data.get("temperature"),
+            humidity=data.get("humidity"),
         )
 
-        return Response({"status": "data recorded"})
-    
-def calculate_aqi(pm25):
-    if pm25 is None:
-        return None, "No data"
+        return Response({"message": "Data received"}, status=200)
 
-    if pm25 <= 30:
-        return pm25, "Good"
-    elif pm25 <= 60:
-        return pm25, "Moderate"
-    elif pm25 <= 90:
-        return pm25, "Poor"
-    else:
-        return pm25, "Very Poor"
+from .utils import calculate_aqi  # adjust import if needed
 
 class DashboardView(APIView):
-    authentication_classes = [JWTAuthentication]   # ✅ ADD THIS
-    permission_classes = [IsAuthenticated]
+    permission_classes = []  # PUBLIC
 
     def get(self, request):
-        device = Device.objects.filter(user=request.user).first()
+        device = Device.objects.first()  # no ordering
+
         if not device:
             return Response({"error": "No device found"}, status=404)
 
-        latest = SensorReading.objects.filter(device=device).order_by('-created_at').first()
+        latest = SensorReading.objects.filter(
+            device=device
+        ).order_by("-created_at").first()
+
         if not latest:
             return Response({"error": "No sensor data"}, status=404)
 
-        aqi_value, status = calculate_aqi(latest.pm25)
-
         return Response({
-            "device_id": device.device_id,
-            "aqi": aqi_value,
-            "status": status,
             "latest_readings": {
                 "pm25": latest.pm25,
                 "gas": latest.gas,

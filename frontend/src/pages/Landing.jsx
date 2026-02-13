@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import "./Landing.css";
 import bgImage from "../assets/landingbg.png";
 
 export default function Landing() {
+  const [openFaq, setOpenFaq] = useState(null);
+
   return (
     <div className="landing">
 
@@ -22,7 +25,7 @@ export default function Landing() {
           <h1>Smart Air Quality Monitoring System</h1>
           <p>
             Real-time monitoring of particulate matter, harmful gases,
-            temperature, and humidity — designed for modern indoor spaces.
+            temperature, and humidity — engineered for modern indoor living.
           </p>
 
           <div className="hero-actions">
@@ -44,8 +47,7 @@ export default function Landing() {
         <div className="container">
           <h2>Why Indoor Air Quality Matters</h2>
           <p className="section-subtitle">
-            Indoor air pollution is silent, invisible, and often more dangerous
-            than outdoor air.
+            Indoor air can be 2–5x more polluted than outdoor air.
           </p>
 
           <div className="card-carousel">
@@ -53,26 +55,23 @@ export default function Landing() {
               <h3>Invisible Threats</h3>
               <p>
                 Pollutants like carbon monoxide, VOCs, and PM2.5 are odorless and
-                invisible. Without monitoring, exposure often goes unnoticed
-                until symptoms appear.
+                undetectable without specialized monitoring.
               </p>
             </div>
 
             <div className="info-card">
-              <h3>Everyday Sources</h3>
+              <h3>Everyday Exposure</h3>
               <p>
-                Gas stoves, cooking fumes, cleaning products, incense,
-                poor ventilation, and furniture continuously release harmful
-                particles indoors.
+                Cooking fumes, gas stoves, cleaning chemicals, incense,
+                and poor ventilation continuously degrade indoor air.
               </p>
             </div>
 
             <div className="info-card">
-              <h3>Health Impact</h3>
+              <h3>Health Consequences</h3>
               <p>
-                Long-term exposure contributes to respiratory issues, headaches,
-                fatigue, reduced focus, and increased health risks for children
-                and seniors.
+                Long-term exposure increases risk of asthma, fatigue,
+                headaches, respiratory irritation, and cardiovascular stress.
               </p>
             </div>
           </div>
@@ -86,31 +85,110 @@ export default function Landing() {
         <div className="container">
           <h2>Why Monitoring Makes the Difference</h2>
           <p className="section-subtitle">
-            You can’t fix what you can’t see.
+            Data-driven awareness transforms prevention into protection.
           </p>
 
           <div className="card-carousel">
             <div className="info-card">
               <h3>Early Detection</h3>
               <p>
-                Detect harmful gas levels and fine particles before they become
-                dangerous — not after symptoms appear.
+                Identify harmful concentration spikes before symptoms appear.
               </p>
             </div>
 
             <div className="info-card">
-              <h3>Data-Driven Decisions</h3>
+              <h3>Informed Action</h3>
               <p>
-                Understand how daily activities affect air quality and take
-                targeted actions like improving ventilation or filtration.
+                Improve ventilation, filtration, or source control using
+                real-time insights.
               </p>
             </div>
 
             <div className="info-card">
-              <h3>Healthier Living</h3>
+              <h3>Safer Environments</h3>
               <p>
-                Maintain a consistently safe indoor environment and reduce
-                long-term exposure risks for your household or workspace.
+                Maintain consistent indoor air standards for homes,
+                offices, labs, and educational institutions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================
+         AQI SCALE
+         ========================= */}
+      {/* =========================
+   AQI SCALE
+   ========================= */}
+      <section className="aqi-section">
+        <div className="container">
+          <h2>Understanding AQI Levels</h2>
+          <p>
+            Our system converts particulate concentration into a clear
+            Air Quality Index for easy interpretation.
+          </p>
+
+          <div className="aqi-scale">
+            <div className="aqi-bar good">
+              <h3>Good</h3>
+              <span>0 – 50</span>
+            </div>
+
+            <div className="aqi-bar moderate">
+              <h3>Moderate</h3>
+              <span>51 – 100</span>
+            </div>
+
+            <div className="aqi-bar unhealthy">
+              <h3>Unhealthy</h3>
+              <span>101 – 200</span>
+            </div>
+
+            <div className="aqi-bar severe">
+              <h3>Hazardous</h3>
+              <span>200+</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================
+         HOW IT WORKS
+         ========================= */}
+      <section className="process-section">
+        <div className="container">
+          <h2>How It Works</h2>
+          <p className="section-subtitle">
+            From detection to insight — a seamless data pipeline.
+          </p>
+
+          <div className="process-grid">
+
+            <div className="process-step">
+              <div className="step-number">01</div>
+              <h3>Sensor Detection</h3>
+              <p>
+                High-precision sensors continuously measure particulate matter,
+                gas concentration, temperature, and humidity in real time.
+              </p>
+            </div>
+
+            <div className="process-step">
+              <div className="step-number">02</div>
+              <h3>Cloud Processing</h3>
+              <p>
+                Data is securely transmitted and processed to compute AQI,
+                apply thresholds, and detect abnormal patterns.
+              </p>
+            </div>
+
+            <div className="process-step">
+              <div className="step-number">03</div>
+              <h3>Live Dashboard</h3>
+              <p>
+                Results are streamed to your web dashboard with alerts,
+                visual indicators, and historical insights.
               </p>
             </div>
           </div>
@@ -124,18 +202,51 @@ export default function Landing() {
         <div className="container">
           <div className="feature">
             <h3>Real-Time Monitoring</h3>
-            <p>Live air quality data streamed directly from the device.</p>
+            <p>Continuous live air quality tracking.</p>
           </div>
 
           <div className="feature">
-            <h3>Modular Sensors</h3>
-            <p>Add optional gas sensors for advanced monitoring.</p>
+            <h3>Modular Architecture</h3>
+            <p>Optional gas sensors for enhanced detection.</p>
           </div>
 
           <div className="feature">
-            <h3>Compact Design</h3>
-            <p>Built for homes, labs, and indoor environments.</p>
+            <h3>Compact Deployment</h3>
+            <p>Designed for homes, labs, and indoor environments.</p>
           </div>
+        </div>
+      </section>
+
+      {/* =========================
+         FAQ
+         ========================= */}
+      <section className="faq-section">
+        <div className="container">
+          <h2>Frequently Asked Questions</h2>
+
+          {[
+            {
+              q: "Does it work without internet?",
+              a: "The device continues collecting data locally. Cloud dashboard requires internet access."
+            },
+            {
+              q: "Is calibration required?",
+              a: "Sensors are factory calibrated for indoor monitoring accuracy."
+            },
+            {
+              q: "Can additional sensors be added later?",
+              a: "Yes. The modular system supports future sensor expansion."
+            }
+          ].map((item, index) => (
+            <div
+              key={index}
+              className={`faq-item ${openFaq === index ? "open" : ""}`}
+              onClick={() => setOpenFaq(openFaq === index ? null : index)}
+            >
+              <h4>{item.q}</h4>
+              {openFaq === index && <p>{item.a}</p>}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -144,8 +255,10 @@ export default function Landing() {
          ========================= */}
       <section className="cta">
         <div className="container">
-          <h2>See the Device in Action</h2>
-          <p>Explore real-time air quality data from a live demo unit.</p>
+          <h2>Experience Real-Time Air Monitoring</h2>
+          <p>
+            Explore live air quality data from our demonstration device.
+          </p>
 
           <Link to="/demo">
             <button className="primary">Open Live Demo</button>
