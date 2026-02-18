@@ -64,8 +64,6 @@ class SensorReading(models.Model):
 
 class SensorData(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    pm25 = models.FloatField()
-    gas_level = models.FloatField()
     temperature = models.FloatField()
     humidity = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)

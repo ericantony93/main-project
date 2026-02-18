@@ -1,26 +1,59 @@
 import { useEffect, useState } from "react";
+import {
+  Line
+} from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import "./LiveDemo.css";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function LiveDemo() {
   const [data, setData] = useState(null);
+  const [history, setHistory] = useState([]);
   const [status, setStatus] = useState("normal");
 
   const PM25_LIMIT = 60;
   const GAS_LIMIT = 300;
 
-  /* =========================
-     FETCH LIVE SENSOR DATA
-     ========================= */
   useEffect(() => {
     const fetchData = () => {
-      fetch("http://localhost:8000/api/store/dashboard/")
+      fetch("http://192.168.1.5:8000/api/store/dashboard/")
         .then((res) => res.json())
         .then((response) => {
           if (!response.latest_readings) return;
 
           const readings = response.latest_readings;
-
           setData(readings);
+
+          // Keep last 20 readings
+          setHistory((prev) => {
+            const updated = [
+              ...prev,
+              {
+                time: new Date().toLocaleTimeString(),
+                temperature: readings.temperature,
+                humidity: readings.humidity,
+              },
+            ];
+            return updated.slice(-20);
+          });
 
           if (
             readings.pm25 > PM25_LIMIT ||
@@ -36,11 +69,52 @@ export default function LiveDemo() {
         });
     };
 
-    fetchData(); // initial load
-    const interval = setInterval(fetchData, 5000);
+    fetchData();
+    const interval = setInterval(fetchData, 2000); // 2 seconds
 
     return () => clearInterval(interval);
   }, []);
+
+  const chartData = {
+    labels: history.map((item) => item.time),
+    datasets: [
+      {
+        label: "Temperature (°C)",
+        data: history.map((item) => item.temperature),
+        borderColor: "#38bdf8",
+        backgroundColor: "rgba(56,189,248,0.2)",
+        tension: 0.4,
+      },
+      {
+        label: "Humidity (%)",
+        data: history.map((item) => item.humidity),
+        borderColor: "#8b5cf6",
+        backgroundColor: "rgba(139,92,246,0.2)",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: "#e5e7eb",
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: { color: "#94a3b8" },
+        grid: { color: "rgba(255,255,255,0.05)" },
+      },
+      y: {
+        ticks: { color: "#94a3b8" },
+        grid: { color: "rgba(255,255,255,0.05)" },
+      },
+    },
+  };
 
   return (
     <div className="dashboard-wrapper">
@@ -51,20 +125,6 @@ export default function LiveDemo() {
 
       {/* METRIC CARDS */}
       <div className="dashboard-grid">
-        <div className="card">
-          <h3>PM2.5</h3>
-          <span>
-            {data?.pm25 ? `${data.pm25} µg/m³` : "—"}
-          </span>
-        </div>
-
-        <div className="card">
-          <h3>Gas Level</h3>
-          <span>
-            {data?.gas ? `${data.gas} ppm` : "—"}
-          </span>
-        </div>
-
         <div className="card">
           <h3>Temperature</h3>
           <span>
@@ -84,28 +144,24 @@ export default function LiveDemo() {
         </div>
       </div>
 
-      {/* STATUS / GRAPH SECTION */}
+      {/* CHART SECTION */}
       <div className={`chart-placeholder ${status}`}>
         <h3>Live Sensor Graph</h3>
 
         {status === "danger" ? (
           <div className="alert danger">
             ⚠ Air Quality Alert
-            <p>
-              Harmful air quality detected. Ventilation recommended.
-            </p>
+            <p>Harmful air quality detected.</p>
           </div>
         ) : (
           <p>Air quality is within safe limits.</p>
         )}
 
-        <div className="graph-mock">
-          Real-time graph will appear here.
-        </div>
+        <Line data={chartData} options={chartOptions} />
       </div>
 
       <p className="demo-note">
-        Public demo · Auto refresh every 5 seconds
+        Public demo · Auto refresh every 2 seconds
       </p>
     </div>
   );

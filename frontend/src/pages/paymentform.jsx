@@ -29,7 +29,7 @@ export default function PaymentForm({ orderId }) {
       return;
     }
 
-    fetch("http://localhost:8000/api/store/create-payment-intent/", {
+    fetch("http://192.168.1.5:8000/api/store/create-payment-intent/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export default function PaymentForm({ orderId }) {
       })
       .then((data) => {
         setClientSecret(data.clientSecret);
-        setTotal(data.amount); // ✅ REAL TOTAL FROM ORDER
+        setTotal(data.amount);
       })
       .catch(() => setError("Unable to initialize payment"));
   }, [orderId]);
@@ -56,7 +56,11 @@ export default function PaymentForm({ orderId }) {
     setLoading(true);
     setError("");
 
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || !clientSecret) {
+      setError("Payment system not ready.");
+      setLoading(false);
+      return;
+    }
 
     const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
@@ -68,8 +72,27 @@ export default function PaymentForm({ orderId }) {
     if (result.error) {
       setError(result.error.message);
       setLoading(false);
-    } else {
+      return;
+    }
+
+    // 🔹 Notify backend to verify + send receipt
+    try {
+      await fetch("http://192.168.1.5:8000/api/store/payment-success/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+        body: JSON.stringify({
+          order_id: orderId,
+          payment_intent: result.paymentIntent.id,
+        }),
+      });
+
       window.location.href = "/success";
+    } catch (err) {
+      setError("Payment succeeded but verification failed.");
+      setLoading(false);
     }
   };
 

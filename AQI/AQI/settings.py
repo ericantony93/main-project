@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-)zopx@^(g^+hx-h_ti&ch)z)0bh^lsa&=ljvf#_rg1kor19z6o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -143,4 +143,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 STRIPE_SECRET_KEY = "sk_test_51Sy87S1X4vWqxrH8lAxjcU6YkWKA6latq4XqupvPGRqKixTjxg7zmBpexjnyq2jAz5UNkKtcfM55bIRggBlYUQ9P00EzWoal3x"
 STRIPE_PUBLISHABLE_KEY = "pk_test_51Sy87S1X4vWqxrH8rORrfjZCpLEWNJbt9cGKo9qKQt9nyii4MQ1ZfRF4KY2nNCexcYvm2DFKidvWbgKHOfYbyv4N00pdfO8FWR"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "ericantony93@gmail.com"
+EMAIL_HOST_PASSWORD = "jsgm ekbi esby iwhw"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
