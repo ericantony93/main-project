@@ -35,7 +35,7 @@ export default function Checkout() {
     const token = localStorage.getItem("access");
     if (!token) return;
 
-    fetch("http://192.168.1.5:8000/api/store/addons/", {
+    fetch("http://localhost:8000/api/store/addons/", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())

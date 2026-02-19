@@ -1,29 +1,123 @@
 import { useEffect, useState } from "react";
-import {
-  Line
-} from "react-chartjs-2";
+import "./LiveDemo.css";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
-  Title,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
-import "./LiveDemo.css";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
-  Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
+/* =========================
+   PREMIUM CHART COMPONENT
+   ========================= */
+function PremiumChart({ readings }) {
+  const labels = readings.map((r) => r.time);
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: "Temperature (°C)",
+        data: readings.map((r) => r.temperature),
+        borderColor: "#38bdf8",
+        backgroundColor: (ctx) => {
+          const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, "rgba(56,189,248,0.4)");
+          gradient.addColorStop(1, "rgba(56,189,248,0.02)");
+          return gradient;
+        },
+        fill: true,
+        tension: 0.45,
+        borderWidth: 3,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+      },
+      {
+        label: "Humidity (%)",
+        data: readings.map((r) => r.humidity),
+        borderColor: "#8b5cf6",
+        backgroundColor: (ctx) => {
+          const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, "rgba(139,92,246,0.35)");
+          gradient.addColorStop(1, "rgba(139,92,246,0.02)");
+          return gradient;
+        },
+        fill: true,
+        tension: 0.45,
+        borderWidth: 3,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: "#e5e7eb",
+          font: { size: 14, weight: "500" },
+        },
+      },
+      tooltip: {
+        backgroundColor: "#0f172a",
+        borderColor: "#334155",
+        borderWidth: 1,
+        titleColor: "#fff",
+        bodyColor: "#cbd5e1",
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: "rgba(255,255,255,0.05)" },
+        ticks: { color: "#94a3b8" },
+      },
+      y: {
+        grid: { color: "rgba(255,255,255,0.05)" },
+        ticks: { color: "#94a3b8" },
+      },
+    },
+  };
+
+  return (
+    <div
+      style={{
+        height: "420px",
+        padding: "30px",
+        borderRadius: "24px",
+        background:
+          "linear-gradient(145deg, rgba(15,23,42,0.95), rgba(2,6,23,0.95))",
+        boxShadow:
+          "0 40px 120px rgba(56,189,248,0.15), inset 0 0 0 1px rgba(255,255,255,0.05)",
+      }}
+    >
+      <Line data={chartData} options={options} />
+    </div>
+  );
+}
+
+/* =========================
+   MAIN LIVE DEMO
+   ========================= */
 export default function LiveDemo() {
   const [data, setData] = useState(null);
   const [history, setHistory] = useState([]);
@@ -42,7 +136,6 @@ export default function LiveDemo() {
           const readings = response.latest_readings;
           setData(readings);
 
-          // Keep last 20 readings
           setHistory((prev) => {
             const updated = [
               ...prev,
@@ -70,51 +163,10 @@ export default function LiveDemo() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 2000); // 2 seconds
+    const interval = setInterval(fetchData, 2000);
 
     return () => clearInterval(interval);
   }, []);
-
-  const chartData = {
-    labels: history.map((item) => item.time),
-    datasets: [
-      {
-        label: "Temperature (°C)",
-        data: history.map((item) => item.temperature),
-        borderColor: "#38bdf8",
-        backgroundColor: "rgba(56,189,248,0.2)",
-        tension: 0.4,
-      },
-      {
-        label: "Humidity (%)",
-        data: history.map((item) => item.humidity),
-        borderColor: "#8b5cf6",
-        backgroundColor: "rgba(139,92,246,0.2)",
-        tension: 0.4,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        labels: {
-          color: "#e5e7eb",
-        },
-      },
-    },
-    scales: {
-      x: {
-        ticks: { color: "#94a3b8" },
-        grid: { color: "rgba(255,255,255,0.05)" },
-      },
-      y: {
-        ticks: { color: "#94a3b8" },
-        grid: { color: "rgba(255,255,255,0.05)" },
-      },
-    },
-  };
 
   return (
     <div className="dashboard-wrapper">
@@ -123,7 +175,6 @@ export default function LiveDemo() {
         Real-time air quality monitoring (Public Demo)
       </p>
 
-      {/* METRIC CARDS */}
       <div className="dashboard-grid">
         <div className="card">
           <h3>Temperature</h3>
@@ -144,7 +195,6 @@ export default function LiveDemo() {
         </div>
       </div>
 
-      {/* CHART SECTION */}
       <div className={`chart-placeholder ${status}`}>
         <h3>Live Sensor Graph</h3>
 
@@ -157,7 +207,7 @@ export default function LiveDemo() {
           <p>Air quality is within safe limits.</p>
         )}
 
-        <Line data={chartData} options={chartOptions} />
+        <PremiumChart readings={history} />
       </div>
 
       <p className="demo-note">

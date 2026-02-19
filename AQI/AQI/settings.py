@@ -149,6 +149,6 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "ericantony93@gmail.com"
-EMAIL_HOST_PASSWORD = "jsgm ekbi esby iwhw"
+EMAIL_HOST_PASSWORD = "zbbe lecz gtso czdp"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 

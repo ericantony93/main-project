@@ -29,7 +29,7 @@ export default function PaymentForm({ orderId }) {
       return;
     }
 
-    fetch("http://192.168.1.5:8000/api/store/create-payment-intent/", {
+    fetch("http://localhost:8000/api/store/create-payment-intent/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export default function PaymentForm({ orderId }) {
 
     // 🔹 Notify backend to verify + send receipt
     try {
-      await fetch("http://192.168.1.5:8000/api/store/payment-success/", {
+      await fetch("http://localhost:8000/api/store/payment-success/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export default function PaymentForm({ orderId }) {
         }),
       });
 
-      window.location.href = "/success";
+      window.location.href = `/payment-success/${orderId}`;
     } catch (err) {
       setError("Payment succeeded but verification failed.");
       setLoading(false);
