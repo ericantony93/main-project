@@ -128,7 +128,7 @@ export default function LiveDemo() {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch("http://192.168.1.5:8000/api/store/dashboard/")
+      fetch("http://192.168.0.140:8000/api/store/dashboard/")
         .then((res) => res.json())
         .then((response) => {
           if (!response.latest_readings) return;
